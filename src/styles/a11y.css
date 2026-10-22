@@ -1,0 +1,38 @@
+/* Accessibility: reduced motion, text only for screen readers. Loaded last. */
+
+/* Reduced motion (system setting): the breathing itself still moves — it's
+   the point of the app — but nothing else does: no hover zooms or nudges,
+   no sliding drawer or summary */
+@media (prefers-reduced-motion: reduce) {
+  .breath-action:hover .breath-action-icon,
+  .breath-action:focus-visible .breath-action-icon,
+  .btn-start:hover,
+  .btn-resume:hover,
+  .btn-pause:hover,
+  .btn-stop:hover,
+  .exercise-item:hover {
+    transform: none;
+  }
+
+  .exercise-list,
+  .exercise-list.open {
+    transition: none;
+  }
+
+  .controls {
+    animation: none;
+  }
+}
+
+/* Read by screen readers, not shown */
+.visually-hidden {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  margin: -1px;
+  padding: 0;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  white-space: nowrap;
+  border: 0;
+}

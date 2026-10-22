@@ -1,0 +1,715 @@
+/* The session screen: title, progress, session length, controls and the
+   summary after an exercise, volume, keyboard hints, full screen and focus mode. */
+
+/* Session View (Left 75%) */
+.session-view {
+  position: relative;
+  flex: 3;
+  padding: 1.5rem 3rem 3rem;
+  /* bottom: room for the fixed keyboard hints */
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: safe center;
+  overflow-y: auto;
+  background: var(--bg);
+}
+
+.exercise-strip {
+  width: 100%;
+  /* wider than the progress bar, so the neighbours' names fit in full */
+  max-width: 900px;
+  margin-bottom: 1rem;
+  /* vertical scrolling stays with the page; horizontal swipes switch exercise */
+  touch-action: pan-y;
+}
+
+/* Name in the middle with its phases underneath, neighbours pinned to the
+   outer edges on the name's line: they stay put whatever the names' lengths,
+   so clicking "next" again hits the same spot. An empty side keeps the name
+   centered too. Everything is one line, so switching exercise never moves
+   the circle below. */
+.exercise-strip-row {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, max-content) minmax(0, 1fr);
+  align-items: center;
+  column-gap: 2rem;
+}
+
+.exercise-title {
+  grid-area: 1 / 2;
+  min-width: 0;
+  font-size: 2rem;
+  font-weight: 400;
+  color: var(--text-strong);
+  text-align: center;
+  letter-spacing: 0.02em;
+  white-space: nowrap;
+}
+
+/* The name is a button that opens the exercise list */
+.exercise-title-btn {
+  max-width: 100%;
+  padding: 0.1em 0.5em;
+  background: none;
+  border: none;
+  border-radius: 999px;
+  color: inherit;
+  font: inherit;
+  letter-spacing: inherit;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.exercise-title-btn:hover:not(:disabled),
+.exercise-title-btn:focus-visible {
+  background: var(--item-hover);
+  outline: none;
+}
+
+.exercise-title-btn:disabled {
+  cursor: default;
+}
+
+/* "Inhale 5 · Exhale 5": meta information, muted but readable */
+.exercise-phases {
+  grid-area: 2 / 2;
+  min-width: 0;
+  margin: 0.2rem 0 0;
+  font-size: 0.95rem;
+  color: var(--text-muted);
+  text-align: center;
+  letter-spacing: 0.03em;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* The previous and next exercise: smaller, lower contrast, a chevron on the
+   outer side; a soft pill behind them on hover and keyboard focus */
+.strip-neighbour {
+  display: inline-flex;
+  align-items: center;
+  max-width: calc(100% + 0.75em);
+  padding: 0.3em 0.75em;
+  background: none;
+  border: none;
+  border-radius: 999px;
+  color: var(--text-faint);
+  font: inherit;
+  font-size: 1.15rem;
+  letter-spacing: 0.02em;
+  white-space: nowrap;
+  cursor: pointer;
+  transition: color 0.2s, background-color 0.2s, opacity 0.3s;
+}
+
+.strip-name {
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.strip-prev .strip-name {
+  margin-left: 0.3em;
+}
+
+.strip-next .strip-name {
+  margin-right: 0.3em;
+}
+
+/* Not enough room for the names (ExerciseStrip measures): only the chevrons.
+   The names stay in the page for screen readers, which also read the labels. */
+.exercise-strip.compact .strip-name {
+  max-width: 0;
+  margin: 0;
+}
+
+.exercise-strip.compact .strip-chevron {
+  width: 1.3em;
+  height: 1.3em;
+}
+
+.strip-chevron {
+  flex-shrink: 0;
+  width: 1em;
+  height: 1em;
+}
+
+/* The pill's padding reaches past the edge, so the chevron itself lines up */
+.strip-prev {
+  grid-area: 1 / 1;
+  justify-self: start;
+  margin-left: -0.75em;
+}
+
+.strip-next {
+  grid-area: 1 / 3;
+  justify-self: end;
+  margin-right: -0.75em;
+}
+
+.strip-neighbour:hover,
+.strip-neighbour:focus-visible {
+  color: var(--text);
+  background: var(--item-hover);
+  outline: none;
+}
+
+/* During a session only the name and its phases stay */
+.exercise-strip.locked .strip-neighbour {
+  opacity: 0;
+  pointer-events: none;
+}
+
+.session-content {
+  width: 100%;
+  max-width: 720px;
+  /* the breathing circle's largest size */
+}
+
+.progress-container {
+  max-width: 600px;
+  margin: 0 auto 1rem;
+}
+
+.progress-label {
+  font-size: 0.875rem;
+  color: var(--text-muted);
+  margin-bottom: 0.5rem;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  display: flex;
+  justify-content: space-between;
+}
+
+.progress-value {
+  font-variant-numeric: tabular-nums;
+}
+
+.progress-bar {
+  width: 100%;
+  height: 12px;
+  background: var(--track);
+  border-radius: 6px;
+  overflow: hidden;
+}
+
+.progress-fill {
+  height: 100%;
+  background: var(--progress-fill);
+  border-radius: 6px;
+}
+
+.session-progress .progress-bar {
+  height: 8px;
+}
+
+/* Session length picker (before starting): quiet pills under the progress */
+.session-length {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 0.5rem;
+  margin-top: 1rem;
+}
+
+/* During a session: invisible but keeps its space (nothing shifts), and out
+   of the Tab order; fades out, then hides */
+.session-length.concealed {
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity 0.3s ease, visibility 0s linear 0.3s;
+}
+
+.session-length button,
+.session-length-custom {
+  height: 32px;
+  padding: 0 0.875rem;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.25rem;
+  background: transparent;
+  border: 1px solid var(--border);
+  border-radius: 999px;
+  color: var(--text-muted);
+  font: inherit;
+  font-size: 0.8125rem;
+  cursor: pointer;
+  transition: color 0.2s, border-color 0.2s;
+}
+
+.session-length button:hover:not(.active) {
+  color: var(--text-strong);
+}
+
+.session-length button.active,
+.session-length-custom {
+  color: var(--text-strong);
+  border-color: var(--text-muted);
+}
+
+/* Your own length sits a little apart from the presets */
+.session-length-own {
+  margin-left: 0.5rem;
+}
+
+.session-length-pencil {
+  width: 13px;
+  height: 13px;
+  margin-left: 0.15rem;
+  opacity: 0.6;
+  transition: opacity 0.2s;
+}
+
+.session-length button:hover .session-length-pencil,
+.session-length button:focus-visible .session-length-pencil {
+  opacity: 1;
+}
+
+.session-length-custom input {
+  width: 3rem;
+  padding: 0;
+  background: transparent;
+  border: none;
+  color: inherit;
+  font: inherit;
+  text-align: right;
+  outline: none;
+}
+
+/* Progress (with the session length) and the summary in one grid cell */
+.session-below {
+  display: grid;
+  /* room for either, so the visual above stays put when the exercise ends
+     (the progress with the length chips is 5rem, the summary a little more) */
+  min-height: 6.25rem;
+  align-items: start;
+}
+
+.session-below > * {
+  grid-area: 1 / 1;
+}
+
+.session-below-progress.concealed {
+  visibility: hidden;
+}
+
+.controls {
+  align-self: start;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1rem;
+  animation: completion-in 0.4s ease;
+}
+
+/* After an exercise: a short summary and what to do next */
+/* After an exercise: one line, items separated by dots */
+.completion {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 0.25rem 0;
+  color: var(--text-subtle);
+  font-size: 0.9375rem;
+}
+
+.completion > span + span::before {
+  content: '·';
+  margin: 0 0.75rem;
+  color: var(--text-faint);
+}
+
+.completion strong {
+  font-weight: 500;
+  color: var(--text-strong);
+  font-variant-numeric: tabular-nums;
+}
+
+.completion-goal {
+  color: var(--accent-text);
+}
+
+@keyframes completion-in {
+  from {
+    opacity: 0;
+    transform: translateY(6px);
+  }
+}
+
+.completion-actions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: center;
+  gap: 0.75rem 1rem;
+}
+
+/* Session controls: quiet round icon buttons, so the breathing visual keeps
+   the attention */
+.control-btn {
+  width: 52px;
+  height: 52px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  padding: 0;
+  background: transparent;
+  border: 1.5px solid var(--border);
+  border-radius: 999px;
+  color: var(--text-dim);
+  font: inherit;
+  font-size: 0.9375rem;
+  cursor: pointer;
+  transition: color 0.2s, border-color 0.2s, background-color 0.2s;
+}
+
+.control-btn svg {
+  width: 20px;
+  height: 20px;
+}
+
+.control-btn:hover,
+.control-btn:focus-visible {
+  color: var(--text-strong);
+  border-color: var(--text-faint);
+  background: var(--item-hover);
+  outline: none;
+}
+
+/* "Start next": icon and text */
+.control-btn-text {
+  width: auto;
+  padding: 0 1.5rem 0 1.25rem;
+}
+
+.control-btn-text svg {
+  width: 16px;
+  height: 16px;
+}
+
+/* Fixed at the bottom of the window, so showing it never moves anything */
+.keyboard-hints-more {
+  padding: 0;
+  background: none;
+  border: none;
+  color: inherit;
+  font: inherit;
+  cursor: pointer;
+  pointer-events: auto;
+}
+
+.keyboard-hints-more:hover {
+  color: var(--text-muted);
+}
+
+/* The bar along the bottom of the window: volume, shortcuts, Stop */
+.session-bar {
+  position: fixed;
+  left: 0;
+  right: 0;
+  bottom: 0.75rem;
+  /* the same inset as the full screen button above */
+  padding: 0 1rem;
+  display: grid;
+  grid-template-columns: 1fr auto 1fr;
+  align-items: center;
+  column-gap: 1.5rem;
+  /* as tall as Stop, so the bar doesn't move when Stop appears */
+  min-height: 1.9rem;
+  pointer-events: none;
+}
+
+.keyboard-hints {
+  display: flex;
+  gap: 1.5rem;
+  justify-content: center;
+  font-size: 0.8125rem;
+  color: var(--text-faint);
+  white-space: nowrap;
+}
+
+/* Stop: only while an exercise runs or is paused; small, with its word */
+.session-stop-slot {
+  /* its own column, so it stays at the right when the shortcuts are hidden */
+  grid-column: 3;
+  justify-self: end;
+}
+
+.session-stop {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  padding: 0.3rem 0.75rem;
+  background: none;
+  border: 1px solid var(--border);
+  border-radius: 999px;
+  color: var(--text-muted);
+  font: inherit;
+  font-size: 0.8125rem;
+  cursor: pointer;
+  pointer-events: auto;
+  transition: color 0.2s, border-color 0.2s, background-color 0.2s, opacity 0.25s ease;
+}
+
+.session-stop svg {
+  width: 12px;
+  height: 12px;
+}
+
+.session-safety {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  padding: 0.3rem 0;
+  background: none;
+  border: none;
+  color: var(--text-faint);
+  font: inherit;
+  font-size: 0.8125rem;
+  white-space: nowrap;
+  cursor: pointer;
+  pointer-events: auto;
+  animation: safety-in 0.3s ease 0.5s both;
+}
+
+.session-safety svg {
+  width: 14px;
+  height: 14px;
+}
+
+.session-safety:hover,
+.session-safety:focus-visible {
+  color: var(--text-strong);
+  text-decoration: underline;
+  outline: none;
+}
+
+/* hidden (not just transparent) during the delay, so it can't be clicked */
+@keyframes safety-in {
+  from {
+    opacity: 0;
+    visibility: hidden;
+  }
+}
+
+.session-stop:hover,
+.session-stop:focus-visible {
+  color: var(--text-strong);
+  border-color: var(--text-faint);
+  background: var(--item-hover);
+  outline: none;
+}
+
+/* Volume Control */
+.volume-control {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  justify-self: start;
+  pointer-events: auto;
+  /* quiet until you reach for it */
+  opacity: 0.6;
+}
+
+.volume-control:hover,
+.volume-control:focus-within {
+  opacity: 1;
+}
+
+.volume-icon {
+  width: 20px;
+  height: 20px;
+  flex-shrink: 0;
+  color: var(--text-muted);
+}
+
+/* Track filled with the accent color up to the handle; --fill is set inline */
+.volume-slider {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 110px;
+  height: 6px;
+  border-radius: 3px;
+  background: linear-gradient(to right,
+      var(--slider) 0,
+      var(--slider) var(--fill, 100%),
+      var(--track) var(--fill, 100%),
+      var(--track) 100%);
+  outline: none;
+  cursor: pointer;
+}
+
+.volume-slider::-moz-range-track {
+  background: transparent;
+}
+
+.volume-slider::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  background: var(--slider);
+  border: 3px solid var(--bg);
+  box-shadow: 0 0 0 1px var(--slider);
+  cursor: pointer;
+  transition: background-color 0.15s, box-shadow 0.15s;
+}
+
+.volume-slider::-moz-range-thumb {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background: var(--slider);
+  border: 3px solid var(--bg);
+  box-shadow: 0 0 0 1px var(--slider);
+  cursor: pointer;
+  transition: background-color 0.15s, box-shadow 0.15s;
+}
+
+/* Hover: the handle brightens (not grows: WebKit clips a handle scaled past
+   the slider's own box). Keyboard focus: a ring in the focus color.
+   Separate rules: a browser drops a whole rule with another engine's selector */
+.volume-slider:hover::-webkit-slider-thumb {
+  background: var(--text-strong);
+  box-shadow: 0 0 0 1px var(--text-strong);
+}
+
+.volume-slider:hover::-moz-range-thumb {
+  background: var(--text-strong);
+  box-shadow: 0 0 0 1px var(--text-strong);
+}
+
+.volume-slider:focus-visible::-webkit-slider-thumb {
+  background: var(--text-strong);
+  box-shadow: 0 0 0 2px var(--focus-ring);
+}
+
+.volume-slider:focus-visible::-moz-range-thumb {
+  background: var(--text-strong);
+  box-shadow: 0 0 0 2px var(--focus-ring);
+}
+
+/* Mute: the speaker left of the main volume slider */
+.mute-btn {
+  display: inline-flex;
+  padding: 4px;
+  margin: -4px;
+  background: none;
+  border: none;
+  border-radius: 6px;
+  color: inherit;
+  cursor: pointer;
+}
+
+.mute-btn:hover .volume-icon,
+.mute-btn:focus-visible .volume-icon {
+  color: var(--text-strong);
+}
+
+.mute-btn:focus-visible {
+  outline: 2px solid var(--text-faint);
+}
+
+.volume-control.muted .mute-btn .volume-icon {
+  color: var(--text-strong);
+}
+
+/* While muted the slider keeps its position but looks inactive */
+.volume-control.muted .volume-slider,
+.level-master.muted .volume-slider {
+  opacity: 0.35;
+}
+
+/* Full screen / focus mode button, top right of the session screen */
+.focus-toggle {
+  position: absolute;
+  top: 1rem;
+  right: 1rem;
+  z-index: 2;
+  width: 38px;
+  height: 38px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0;
+  background: transparent;
+  border: 1.5px solid var(--border);
+  border-radius: 999px;
+  color: var(--text-dim);
+  cursor: pointer;
+  transition: color 0.2s, border-color 0.2s, background-color 0.2s, opacity 0.2s;
+}
+
+/* The phases guide: the same round button, top left */
+.focus-toggle.guide-toggle {
+  left: 1rem;
+  right: auto;
+}
+
+.guide-toggle.concealed {
+  opacity: 0;
+  pointer-events: none;
+}
+
+.focus-toggle svg {
+  width: 18px;
+  height: 18px;
+}
+
+.focus-toggle:hover,
+.focus-toggle:focus-visible {
+  color: var(--text-strong);
+  border-color: var(--text-faint);
+  background: var(--item-hover);
+  outline: none;
+}
+
+/* Full screen: no header, the session gets the whole screen */
+.app.fullscreen .app-header {
+  display: none;
+}
+
+/* Focus mode: once the mouse rests, everything but the breathing visual and
+   the progress fades out (slowly), and comes back quickly on any movement */
+.app-header,
+.exercise-strip,
+.controls,
+.session-length,
+.volume-control,
+.keyboard-hints {
+  transition: opacity 0.25s ease;
+}
+
+.app.chrome-hidden {
+  cursor: none;
+}
+
+.app.chrome-hidden .app-header,
+.app.chrome-hidden .exercise-strip,
+.app.chrome-hidden .controls,
+.app.chrome-hidden .session-length,
+.app.chrome-hidden .volume-control,
+.app.chrome-hidden .keyboard-hints,
+.app.chrome-hidden .session-stop,
+.app.chrome-hidden .session-safety,
+.app.chrome-hidden .focus-toggle,
+.app.chrome-hidden .bottom-nav {
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 1.2s ease;
+}
+
+.app.chrome-hidden .progress-label {
+  opacity: 0.5;
+  transition: opacity 1.2s ease;
+}
+
+/* After a session the summary needs the room; the shortcuts don't apply then */
+.app.session-completed .keyboard-hints {
+  display: none;
+}

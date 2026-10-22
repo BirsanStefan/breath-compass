@@ -1,0 +1,10 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" role="img" aria-labelledby="title desc">
+<title id="title">Four-phase breathing logo</title>
+<desc id="desc">Four identical drops turning clockwise: sky blue (inhale), sage green (hold), amber (exhale) and lavender (sustain), with a darker fold on each.</desc>
+<!-- One drop rotated in 90° steps around the center (256,256), so all four are identical.
+     Each drop's outline includes its fold, so the fold sits on top of it (no seam) -->
+<g transform="rotate(0 256 256)"><path fill="#69B7E8" d="M 266,71 C 302,68 346,88 384,120 C 422,153 442,193 435,226 C 431,248 418,265 398,271 C 374,279 353,266 335,248 C 310,227 303,206 305,180 C 308,148 295,111 266,71 Z"/><path fill="#4E9ED2" d="M 266,71 C 296,91 315,127 316,176 C 317,203 319,229 335,248 C 310,227 303,206 305,180 C 308,148 295,111 266,71 Z"/></g>
+<g transform="rotate(90 256 256)"><path fill="#A3BE8C" d="M 266,71 C 302,68 346,88 384,120 C 422,153 442,193 435,226 C 431,248 418,265 398,271 C 374,279 353,266 335,248 C 310,227 303,206 305,180 C 308,148 295,111 266,71 Z"/><path fill="#87A570" d="M 266,71 C 296,91 315,127 316,176 C 317,203 319,229 335,248 C 310,227 303,206 305,180 C 308,148 295,111 266,71 Z"/></g>
+<g transform="rotate(180 256 256)"><path fill="#E8B978" d="M 266,71 C 302,68 346,88 384,120 C 422,153 442,193 435,226 C 431,248 418,265 398,271 C 374,279 353,266 335,248 C 310,227 303,206 305,180 C 308,148 295,111 266,71 Z"/><path fill="#D29E58" d="M 266,71 C 296,91 315,127 316,176 C 317,203 319,229 335,248 C 310,227 303,206 305,180 C 308,148 295,111 266,71 Z"/></g>
+<g transform="rotate(270 256 256)"><path fill="#B4A1D8" d="M 266,71 C 302,68 346,88 384,120 C 422,153 442,193 435,226 C 431,248 418,265 398,271 C 374,279 353,266 335,248 C 310,227 303,206 305,180 C 308,148 295,111 266,71 Z"/><path fill="#9784C4" d="M 266,71 C 296,91 315,127 316,176 C 317,203 319,229 335,248 C 310,227 303,206 305,180 C 308,148 295,111 266,71 Z"/></g>
+</svg>

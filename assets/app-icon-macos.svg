@@ -1,0 +1,38 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1024" height="1024" viewBox="0 0 1024 1024">
+<!-- The macOS app icon: Apple's grid (an 824 px tile with 185 px corners at
+     100,100 on a 1024 canvas, the margin leaving room for the shadow) and the
+     shadow from Apple's template. Linux and Windows use app-icon.svg. -->
+<defs>
+  <linearGradient id="tile" x1="512" y1="100" x2="512" y2="942" gradientUnits="userSpaceOnUse">
+    <stop offset="0" stop-color="#eef2f3"/>
+    <stop offset="1" stop-color="#e1e5eb"/>
+  </linearGradient>
+  <filter id="shadow" x="91.000099" y="98" width="842" height="846" filterUnits="userSpaceOnUse" color-interpolation-filters="sRGB">
+    <feFlood flood-opacity="0" result="BackgroundImageFix"/>
+    <feColorMatrix in="SourceAlpha" type="matrix" values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 127 0" result="hardAlpha"/>
+    <feMorphology radius="1" operator="dilate" in="SourceAlpha" result="effect1_dropShadow_1_2"/>
+    <feOffset dy="7"/>
+    <feGaussianBlur stdDeviation="4"/>
+    <feComposite in2="hardAlpha" operator="out"/>
+    <feColorMatrix type="matrix" values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0.15 0"/>
+    <feBlend mode="normal" in2="BackgroundImageFix" result="effect1_dropShadow_1_2"/>
+    <feColorMatrix in="SourceAlpha" type="matrix" values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 127 0" result="hardAlpha"/>
+    <feOffset dy="12"/>
+    <feGaussianBlur stdDeviation="4"/>
+    <feComposite in2="hardAlpha" operator="out"/>
+    <feColorMatrix type="matrix" values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0.15 0"/>
+    <feBlend mode="normal" in2="effect1_dropShadow_1_2" result="effect2_dropShadow_1_2"/>
+    <feBlend mode="normal" in="SourceGraphic" in2="effect2_dropShadow_1_2" result="shape"/>
+  </filter>
+  <path id="drop" d="m 266,71 c 36,-3 80,17 118,49 38,33 58,73 51,106 -4,22 -17,39 -37,45 -24,8 -45,-5 -63,-23 -16,-19 -18,-45 -19,-72 -1,-49 -20,-85 -50,-105 z"/>
+  <path id="fold" d="m 266,71 c 30,20 49,56 50,105 1,27 3,53 19,72 -25,-21 -32,-42 -30,-68 3,-32 -10,-69 -39,-109 z"/>
+</defs>
+<rect x="100" y="100" width="824" height="824" rx="185" fill="url(#tile)" filter="url(#shadow)"/>
+<!-- The drops fit the grid's large circle, centered -->
+<g transform="matrix(1.710913,0,0,1.710913,74.0063,74.0063)">
+  <g transform="rotate(0,256,256)"><use href="#drop" fill="#4badf7"/><use href="#fold" fill="#268ae3"/></g>
+  <g transform="rotate(90,256,256)"><use href="#drop" fill="#63cc69"/><use href="#fold" fill="#3aa74d"/></g>
+  <g transform="rotate(180,256,256)"><use href="#drop" fill="#ffa51b"/><use href="#fold" fill="#df8506"/></g>
+  <g transform="rotate(270,256,256)"><use href="#drop" fill="#a17de9"/><use href="#fold" fill="#7956c7"/></g>
+</g>
+</svg>

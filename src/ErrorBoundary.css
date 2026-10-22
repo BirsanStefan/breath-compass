@@ -1,0 +1,64 @@
+/* Crash screen (ErrorBoundary.jsx). Uses the theme's colors when they're
+   loaded, with plain fallbacks in case they aren't. */
+.crash {
+  max-width: 34rem;
+  margin: 0 auto;
+  padding: 18vh 1.5rem 2rem;
+  color: var(--text, #e0e0e0);
+  font-family: 'Ubuntu App', 'Ubuntu', sans-serif;
+  line-height: 1.5;
+}
+
+.crash h1 {
+  margin: 0 0 0.75rem;
+  font-size: 1.5rem;
+  font-weight: 500;
+  color: var(--text-strong, #fff);
+}
+
+.crash p {
+  margin: 0 0 1.25rem;
+  color: var(--text-dim, #bbb);
+}
+
+.crash-reload {
+  padding: 0.625rem 1.5rem;
+  border: none;
+  border-radius: 6px;
+  background: var(--accent, #8BAE91);
+  color: var(--on-accent, #17251B);
+  font: inherit;
+  cursor: pointer;
+}
+
+.crash-reload:hover {
+  background: var(--accent-hover, #A3BEA7);
+}
+
+.crash details {
+  margin-top: 2rem;
+  font-size: 0.875rem;
+  color: var(--text-muted, #a8a8a8);
+}
+
+.crash summary {
+  cursor: pointer;
+}
+
+.crash pre {
+  margin: 0.75rem 0;
+  padding: 0.75rem;
+  max-height: 14rem;
+  overflow: auto;
+  white-space: pre-wrap;
+  word-break: break-word;
+  background: var(--item, #2a2a2a);
+  border-radius: 6px;
+  font-size: 0.75rem;
+  user-select: text;
+  scrollbar-color: var(--scroll-thumb, #3a3a3a) transparent;
+}
+
+.crash a {
+  color: var(--success-text, #81c784);
+}

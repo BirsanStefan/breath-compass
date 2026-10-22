@@ -1,0 +1,278 @@
+/* The app frame: header, language menu, header buttons, scrollbars. */
+
+.app {
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+.app-header {
+  background: var(--raised);
+  padding: 1rem 2rem;
+  border-bottom: 1px solid var(--border);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.header-actions {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.language-menu {
+  position: relative;
+}
+
+.language-button {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  height: 34px;
+  padding: 0 0.75rem;
+  background: var(--surface-sunken);
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  color: var(--text-soft);
+  font: inherit;
+  font-size: 0.875rem;
+  cursor: pointer;
+  transition: background 0.2s, border-color 0.2s;
+}
+
+.language-button:hover,
+.language-button.open {
+  background: var(--item-hover);
+}
+
+.language-button.open {
+  border-color: var(--accent);
+}
+
+.language-button svg {
+  width: 16px;
+  height: 16px;
+  color: var(--text-muted);
+}
+
+.language-caret {
+  font-size: 0.75rem;
+  color: var(--text-subtle);
+}
+
+.language-list {
+  position: absolute;
+  top: calc(100% + 6px);
+  right: 0;
+  z-index: 10;
+  min-width: 180px;
+  list-style: none;
+  background: var(--raised);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 0.375rem;
+  box-shadow: 0 8px 24px var(--shadow);
+}
+
+.language-item {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  width: 100%;
+  padding: 0.5rem 0.75rem;
+  background: none;
+  border: none;
+  border-radius: 6px;
+  color: var(--text);
+  font: inherit;
+  font-size: 0.9375rem;
+  text-align: left;
+  cursor: pointer;
+}
+
+.language-item:hover {
+  background: var(--item-hover);
+}
+
+.language-radio {
+  width: 16px;
+  height: 16px;
+  flex-shrink: 0;
+  border: 2px solid var(--text-faint);
+  border-radius: 50%;
+}
+
+.language-item.selected .language-radio {
+  border-color: var(--accent);
+  background: radial-gradient(circle, var(--accent) 0 4px, transparent 5px);
+}
+
+.app-header h1 {
+  display: flex;
+  align-items: center;
+  gap: 0.625rem;
+  font-size: 1.5rem;
+  font-weight: 500;
+  color: var(--text-strong);
+}
+
+/* The logo and name: back to the breathing screen */
+.app-home {
+  display: flex;
+  align-items: center;
+  gap: 0.625rem;
+  padding: 0;
+  background: none;
+  border: none;
+  border-radius: 6px;
+  color: inherit;
+  font: inherit;
+  cursor: pointer;
+}
+
+.app-home:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 4px;
+}
+
+.app-logo {
+  width: 1.4em;
+  height: 1.4em;
+}
+
+.app-body {
+  flex: 1;
+  display: flex;
+  overflow: hidden;
+  position: relative;
+  /* the exercise drawer is placed inside it */
+}
+
+/* Scrollbar styling (standard property for Firefox; ::-webkit rules for the rest) */
+.session-view,
+.exercise-list,
+.settings-view {
+  scrollbar-color: var(--scroll-thumb) var(--bg);
+}
+
+.session-view::-webkit-scrollbar,
+.exercise-list::-webkit-scrollbar {
+  width: 8px;
+}
+
+.session-view::-webkit-scrollbar-track,
+.exercise-list::-webkit-scrollbar-track {
+  background: var(--bg);
+}
+
+.session-view::-webkit-scrollbar-thumb,
+.exercise-list::-webkit-scrollbar-thumb {
+  background: var(--scroll-thumb);
+  border-radius: 4px;
+}
+
+.exercise-list::-webkit-scrollbar-thumb:hover {
+  background: var(--scroll-thumb-hover);
+}
+
+/* Header button (settings) */
+.header-btn {
+  width: 34px;
+  height: 34px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--surface-sunken);
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  color: var(--text-dim);
+  font-size: 1.125rem;
+  cursor: pointer;
+  transition: background 0.2s, color 0.2s;
+}
+
+.header-btn:hover:not([aria-disabled="true"]) {
+  color: var(--text-strong);
+  background: var(--item-hover);
+}
+
+.header-btn.active {
+  color: var(--text-strong);
+  border-color: var(--accent);
+}
+
+.header-btn[aria-disabled="true"] {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+
+.header-btn svg {
+  width: 18px;
+  height: 18px;
+}
+
+
+/* ==================== BOTTOM BAR (phones) ==================== */
+/* Shown by responsive.css on narrow screens; fades out during a session
+   and with the rest of the interface in focus mode */
+.bottom-nav {
+  display: none;
+  position: fixed;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 25;
+  grid-template-columns: repeat(4, 1fr);
+  height: calc(var(--bottom-nav-height) + env(safe-area-inset-bottom, 0px));
+  padding-bottom: env(safe-area-inset-bottom, 0px);
+  background: var(--raised);
+  border-top: 1px solid var(--border);
+  transition: opacity 0.25s ease;
+}
+
+.bottom-nav.hidden {
+  opacity: 0;
+  pointer-events: none;
+}
+
+.bottom-nav-tab {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 0.25rem;
+  min-width: 0;
+  background: none;
+  border: none;
+  color: var(--text-faint);
+  font: inherit;
+  font-size: 0.75rem;
+  letter-spacing: 0.01em;
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+  transition: color 0.2s;
+}
+
+.bottom-nav-tab.active {
+  color: var(--accent);
+}
+
+.bottom-nav-tab:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: -4px;
+  border-radius: 8px;
+}
+
+.bottom-nav-icon {
+  width: 22px;
+  height: 22px;
+}
+
+.bottom-nav-label {
+  max-width: 100%;
+  padding: 0 0.25rem;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}

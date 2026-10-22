@@ -1,0 +1,53 @@
+{
+  "$schema": "https://schema.tauri.app/config/2",
+  "productName": "Breath Compass",
+  "version": "../package.json",
+  "identifier": "io.github.BirsanStefan.BreathCompass",
+  "build": {
+    "beforeDevCommand": "npm run dev",
+    "devUrl": "http://localhost:1420",
+    "beforeBuildCommand": "npm run build",
+    "frontendDist": "../dist"
+  },
+  "app": {
+    "windows": [
+      {
+        "title": "Breath Compass",
+        "width": 1200,
+        "height": 800,
+        "minWidth": 800,
+        "minHeight": 600,
+        "resizable": true,
+        "fullscreen": false,
+        "visible": false,
+        "backgroundThrottling": "disabled"
+      }
+    ],
+    "security": {
+      "csp": null
+    }
+  },
+  "bundle": {
+    "license": "GPL-3.0-or-later",
+    "active": true,
+    "targets": "all",
+    "category": "HealthcareAndFitness",
+    "longDescription": "A minimalist breathing exercise application with audio guidance",
+    "shortDescription": "Breathing exercise application",
+    "icon": [
+      "icons/32x32.png",
+      "icons/128x128.png",
+      "icons/128x128@2x.png",
+      "icons/icon.icns",
+      "icons/icon.ico"
+    ],
+    "linux": {
+      "deb": {
+        "depends": ["gstreamer1.0-plugins-good"]
+      },
+      "rpm": {
+        "depends": ["gstreamer1-plugins-good"]
+      }
+    }
+  }
+}

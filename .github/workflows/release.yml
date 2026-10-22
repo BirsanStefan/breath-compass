@@ -1,0 +1,105 @@
+# Builds the desktop installers and attaches them to a GitHub Release.
+#
+# To release: set the version in package.json (e.g. 0.2.0), commit, then
+#   git tag v0.2.0 && git push origin v0.2.0
+# The tag must match package.json. The builds take about 15–20 minutes and
+# end in a *draft* release: check it on GitHub, write the notes, publish.
+#
+# Installers (tauri.conf.json "targets": "all"):
+#   Linux    .deb (Debian, Ubuntu, Mint…), .rpm (Fedora, openSUSE…), .AppImage (any distro)
+#   Windows  -setup.exe (NSIS installer) and .msi
+#   macOS    .dmg, for Apple Silicon and for Intel
+# None are signed yet: Windows SmartScreen and macOS Gatekeeper warn on
+# first launch (see README → Installing).
+name: Release
+
+on:
+  push:
+    tags: ['v*']
+  # Also runnable by hand (Actions → Release → Run workflow) for a test build;
+  # that makes a draft release named after the version in package.json
+  workflow_dispatch:
+
+permissions:
+  contents: write # create the release and upload the installers
+
+jobs:
+  # No installers from code that fails its tests
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+      - run: npm ci
+      - run: npm test
+
+  build:
+    needs: test
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          # The oldest supported Ubuntu: the Linux builds then also run on older distros
+          - platform: ubuntu-22.04
+            args: ''
+          - platform: windows-latest
+            args: ''
+          - platform: macos-latest # Apple Silicon
+            args: '--target aarch64-apple-darwin'
+          - platform: macos-latest # Intel, cross-built
+            args: '--target x86_64-apple-darwin'
+    runs-on: ${{ matrix.platform }}
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Check that the tag matches package.json
+        if: startsWith(github.ref, 'refs/tags/')
+        shell: bash
+        run: |
+          version=$(node -p "require('./package.json').version")
+          if [ "${GITHUB_REF_NAME}" != "v${version}" ]; then
+            echo "::error::Tag ${GITHUB_REF_NAME} doesn't match package.json version ${version} (expected v${version})"
+            exit 1
+          fi
+
+      - name: Linux build dependencies
+        if: matrix.platform == 'ubuntu-22.04'
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y libwebkit2gtk-4.1-dev libayatana-appindicator3-dev librsvg2-dev patchelf
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+
+      - uses: dtolnay/rust-toolchain@stable
+        with:
+          # both Mac architectures are built on the same (Apple Silicon) runner
+          targets: ${{ startsWith(matrix.platform, 'macos') && 'aarch64-apple-darwin,x86_64-apple-darwin' || '' }}
+
+      - uses: swatinem/rust-cache@v2
+        with:
+          workspaces: src-tauri -> target
+
+      - run: npm ci
+
+      - uses: tauri-apps/tauri-action@v0
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          tagName: v__VERSION__ # __VERSION__ is the version from package.json
+          releaseName: Breath Compass v__VERSION__
+          releaseBody: |
+            **Linux:** `.deb` for Debian, Ubuntu and Mint · `.rpm` for Fedora and openSUSE · `.AppImage` for any distribution (make it executable, then run it).
+            **Windows:** the `-setup.exe` installer (or the `.msi`).
+            **macOS:** the `.dmg` — `aarch64` for Apple Silicon (M1 and later), `x64` for Intel Macs.
+
+            The installers aren't signed yet, so Windows and macOS warn the first time; see the README's *Installing* section.
+          releaseDraft: true
+          prerelease: false
+          args: ${{ matrix.args }}

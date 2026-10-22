@@ -1,0 +1,323 @@
+/* The breathing visuals: the circle (phase ring + inner circle), the line, and
+   the play/pause button over them. */
+
+/* Breathing visuals: the circle (phase ring + breathing inner circle) and the
+   line; both take the same space */
+.breath-circle,
+.breath-line {
+  /* The current phase's color (set inline, see phaseColorVars) */
+  --circle-color: var(--phase-color, var(--phase-inhale));
+  position: relative;
+  /* As big as the window allows; the height (69% of the width) is what
+     usually limits it, so the rest of the screen still fits below */
+  width: min(720px, 74vh, 100%);
+  aspect-ratio: 480 / 330;
+  margin: 0 auto 1.5rem;
+  container-type: inline-size;
+}
+
+.breath-ring {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  overflow: visible;
+}
+
+/* Ring segments take their phase's color; the track is a faint version */
+.ring-segment.phase-inhale,
+.line-segment.phase-inhale {
+  stroke: var(--phase-inhale);
+}
+
+.ring-segment.phase-hold,
+.line-segment.phase-hold {
+  stroke: var(--phase-hold);
+}
+
+.ring-segment.phase-exhale,
+.line-segment.phase-exhale {
+  stroke: var(--phase-exhale);
+}
+
+.ring-segment.phase-sustain,
+.line-segment.phase-sustain {
+  stroke: var(--phase-sustain);
+}
+
+.ring-segment.ring-track {
+  stroke-opacity: 0.3;
+}
+
+/* Breath Line */
+.breath-line-graph {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  overflow: visible;
+}
+
+/* An exercise's shape, next to its name and in the editor (sized where used) */
+.breath-shape {
+  display: block;
+  flex-shrink: 0;
+  overflow: visible;
+}
+
+.breath-shape .line-segment {
+  stroke-width: var(--shape-stroke, 2.5px);
+}
+
+.line-segment.line-done {
+  stroke-opacity: 0.3;
+}
+
+.breath-line-cursor {
+  stroke: var(--circle-color);
+  stroke-opacity: 0.35;
+  stroke-width: 2;
+}
+
+.breath-line-dot {
+  fill: var(--circle-color);
+  stroke: var(--bg);
+  stroke-width: 4;
+}
+
+/* Phase and seconds, in the space under the graph */
+.breath-line-status {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  height: 22%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 2.5cqw;
+  pointer-events: none;
+}
+
+.breath-line-phase {
+  font-size: 4.2cqw;
+  font-weight: 500;
+  color: var(--text-strong);
+}
+
+.breath-line-seconds {
+  min-width: 2ch;
+  font-size: 7cqw;
+  line-height: 1;
+  color: var(--circle-color);
+  font-variant-numeric: tabular-nums;
+}
+
+.breath-ring-label {
+  font-size: 13px;
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  fill: var(--text-subtle);
+}
+
+.breath-inner {
+  color: var(--circle-color);
+  background-color: color-mix(in srgb, var(--circle-color) 22%, transparent);
+  border: 2px solid color-mix(in srgb, var(--circle-color) 55%, transparent);
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  aspect-ratio: 1;
+  border-radius: 50%;
+  will-change: transform;
+  /* A new phase's color fades in rather than jumping */
+  transition: background-color 0.8s ease, border-color 0.8s ease, color 0.8s ease;
+}
+
+.breath-text {
+  position: absolute;
+  inset: 0;
+  /* Grey (not colored, LCD) font smoothing for the large phase name and
+     digits: with subpixel smoothing on (common on Linux) their edges get blue
+     and orange fringes, visible on the light theme. Its own layer makes
+     WebKit smooth it in grey; the second line does the same on macOS. */
+  will-change: transform;
+  -webkit-font-smoothing: antialiased;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  pointer-events: none;
+}
+
+.breath-text.concealed {
+  opacity: 0;
+}
+
+/* Not breathing (before the start, after Stop or the end): the circle's size
+   and color glide over SETTLE_SECONDS (session/breath.js), with the music's fade */
+.breath-inner.settling {
+  transition: transform 1.5s ease-in-out, background-color 1.5s, border-color 1.5s, color 1.5s;
+}
+
+.breath-action.settling {
+  transition: transform 1.5s ease-in-out, background-color 0.2s, color 1.5s;
+}
+
+.ring-fading {
+  animation: ring-fade 1.5s ease forwards;
+}
+
+@keyframes ring-fade {
+  to {
+    opacity: 0;
+  }
+}
+
+.breath-line.settling .breath-line-dot,
+.breath-line.settling .breath-line-cursor {
+  transition: transform 1.5s ease-in-out;
+}
+
+/* The inner circle as a button: ▶ before starting and while paused; while
+   breathing, ⏸ replaces the text on hover */
+.breath-action {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  aspect-ratio: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0;
+  border: none;
+  border-radius: 50%;
+  background: transparent;
+  color: var(--circle-color);
+  cursor: pointer;
+  transition: background-color 0.2s, color 0.2s;
+}
+
+.breath-action-icon {
+  display: flex;
+  width: 30%;
+  height: 30%;
+  transition: transform 0.2s, opacity 0.2s;
+}
+
+.breath-action-icon svg {
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+
+/* Over the whole line graph: the icon sits in a round badge in the middle */
+.breath-action.area {
+  inset: 0;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  aspect-ratio: auto;
+  border-radius: 12px;
+}
+
+.breath-action.area:hover,
+.breath-action.area:focus-visible {
+  background: color-mix(in srgb, var(--circle-color) 6%, transparent);
+}
+
+/* The badge is its own element (not the icon's background), so it scales
+   whole instead of being clipped while it animates */
+.breath-action.area .breath-action-icon {
+  box-sizing: border-box;
+  width: 16cqw;
+  height: 16cqw;
+  padding: 3.5cqw;
+  border-radius: 50%;
+  background: color-mix(in srgb, var(--circle-color) 22%, var(--bg));
+  box-shadow: 0 0 0 2px color-mix(in srgb, var(--circle-color) 55%, transparent);
+}
+
+/* the triangle's visual center is right of its box center (in the line
+   view's badge the path itself is centered) */
+.breath-action.play:not(.area) .breath-action-icon {
+  margin-left: 4%;
+}
+
+.breath-action:hover,
+.breath-action:focus-visible {
+  background: color-mix(in srgb, var(--circle-color) 14%, transparent);
+  outline: none;
+}
+
+.breath-action:hover .breath-action-icon,
+.breath-action:focus-visible .breath-action-icon {
+  transform: scale(1.12);
+}
+
+.breath-action.pause .breath-action-icon {
+  opacity: 0;
+}
+
+.breath-action.pause:hover .breath-action-icon,
+.breath-action.pause:focus-visible .breath-action-icon {
+  opacity: 1;
+}
+
+/* After the end the circle starts the exercise again: a small ↻ under "Done",
+   always shown (it's the only hint), brighter on hover */
+.breath-action.again:not(.area) .breath-action-icon {
+  width: 13%;
+  height: 13%;
+  transform: translateY(135%);
+  opacity: 0.7;
+}
+
+.breath-action.again:hover .breath-action-icon,
+.breath-action.again:focus-visible .breath-action-icon {
+  opacity: 1;
+}
+
+.breath-text {
+  transition: opacity 0.5s;
+}
+
+.breath-action.pause:hover~.breath-text,
+.breath-action.pause:focus-visible~.breath-text {
+  opacity: 0;
+  transition-duration: 0.2s;
+}
+
+.breath-phase {
+  font-size: 4.8cqw;
+  font-weight: 500;
+  color: var(--text-strong);
+}
+
+.breath-phase.long {
+  font-size: 3.8cqw;
+}
+
+.breath-seconds {
+  color: var(--circle-color);
+  transition: color 0.8s ease;
+  font-size: 14cqw;
+  font-weight: 400;
+  line-height: 1.1;
+  font-variant-numeric: tabular-nums;
+}
+
+/* "Next: exhale · 6s", just under the visual (in its bottom margin) */
+.breath-next {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  right: 0;
+  font-size: 0.875rem;
+  color: var(--text-dim);
+  text-align: center;
+  pointer-events: none;
+}

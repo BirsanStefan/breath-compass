@@ -1,0 +1,15 @@
+/* All styles, in cascade order: later files override earlier ones on ties.
+   Each file is one part of the app; responsive.css and a11y.css come last
+   because they adjust the others. */
+@import './fonts.css';
+@import './theme.css';
+@import './layout.css';
+@import './controls.css';
+@import './session.css';
+@import './breath.css';
+@import './exercise-list.css';
+@import './settings.css';
+@import './stats.css';
+@import './guide.css';
+@import './responsive.css';
+@import './a11y.css';

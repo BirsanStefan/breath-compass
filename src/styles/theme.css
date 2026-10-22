@@ -1,0 +1,168 @@
+/* Colors (dark and light theme, phase palettes) and page basics. */
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+/* ==================== THEMES ====================
+   Dark is the default; data-theme="light" on <html> switches to light
+   (set from the OS preference or the user's choice, see src/theme.js).
+   color-scheme also themes built-in controls (number spinners, dropdown
+   lists), including in the Linux desktop webview, which otherwise follows
+   the GTK theme. */
+:root {
+  --bottom-nav-height: 3.5rem;
+  color-scheme: dark;
+  --bg: #1a1a1a;
+  --surface: #222;
+  --surface-sunken: #1f1f1f;
+  --raised: #2a2a2a;
+  --item: #2a2a2a;
+  --item-hover: #323232;
+  /* a faint tint of the accent */
+  --selected-bg: #283229;
+  --input-bg: #1a1a1a;
+  --track: #2a2a2a;
+  --control: #2f2f2f;
+  --control-hover: #3a3a3a;
+  --btn-secondary: #3a3a3a;
+  --btn-secondary-hover: #454545;
+  --border: #3a3a3a;
+  --border-soft: #2f2f2f;
+  --scroll-thumb: #3a3a3a;
+  --scroll-thumb-hover: #4a4a4a;
+  --text-strong: #fff;
+  --text: #e0e0e0;
+  --text-soft: #ddd;
+  --text-dim: #bbb;
+  /* the three greys pass WCAG AA (4.5:1) on --bg, --surface and --item */
+  --text-muted: #a8a8a8;
+  --text-subtle: #9a9a9a;
+  --text-faint: #919191;
+  --success-text: #81c784;
+  --warning-text: #ffb74d;
+  --error-text: #ef9a9a;
+  --shadow: rgba(0, 0, 0, 0.4);
+  --backdrop: rgba(0, 0, 0, 0.45);
+
+  /* Accent: active tabs and choices, selected items, toggles, primary buttons,
+     links and met-goal bars. --accent-text is for text on
+     the background, --on-accent for text on an accent fill (both pass 4.5:1) */
+  --accent: #8BAE91;
+  --accent-hover: #A3BEA7;
+  --accent-text: #8BAE91;
+  --accent-text-hover: #A3BEA7;
+  --on-accent: #17251B;
+  --focus-ring: #A3BEA7;
+  /* the session's progress bar: quiet grey, so it doesn't pull the eye from the circle */
+  --progress-fill: #8a8a8a;
+
+  /* Volume sliders: track fill and handle */
+  --slider: #d8d8d8;
+  /* Breathing phases: ring segments, the inner circle and the countdown digits */
+  --phase-inhale: #69B7E8;
+  --phase-hold: #A3BE8C;
+  --phase-exhale: #E8B978;
+  --phase-sustain: #B4A1D8;
+}
+
+/* Phase color palettes (Settings → General, per device): data-palette on
+   <html>, and on the color dots that preview each palette in Settings */
+[data-palette="default"] {
+  --phase-inhale: #69B7E8;
+  --phase-hold: #A3BE8C;
+  --phase-exhale: #E8B978;
+  --phase-sustain: #B4A1D8;
+}
+
+/* Default, quieter: the same hues, about a quarter less saturated */
+[data-palette="soft"] {
+  --phase-inhale: #78B8D6;
+  --phase-hold: #9CB99A;
+  --phase-exhale: #E4B47D;
+  --phase-sustain: #BAA7CF;
+}
+
+[data-palette="vivid"] {
+  --phase-inhale: #2196F3;
+  --phase-hold: #43A047;
+  --phase-exhale: #FB8C00;
+  --phase-sustain: #8E6CD8;
+}
+
+/* Blue, yellow, red-orange and grey differ in lightness as well as hue, so
+   they stay apart with the common (red-green) types of color blindness */
+[data-palette="colorblind"] {
+  --phase-inhale: #56B4E9;
+  --phase-hold: #F0E442;
+  --phase-exhale: #D55E00;
+  --phase-sustain: #9E9E9E;
+}
+
+:root[data-theme="light"][data-palette="colorblind"],
+:root[data-theme="light"] [data-palette="colorblind"] {
+  --phase-inhale: #3A9AD9;
+  --phase-hold: #C2B200;
+  --phase-sustain: #8A8A8A;
+}
+
+:root[data-theme="light"] {
+  color-scheme: light;
+  --bg: #f4f4f1;
+  --surface: #ffffff;
+  --surface-sunken: #f7f7f4;
+  --raised: #ffffff;
+  --item: #f0f0ec;
+  --item-hover: #e7e7e2;
+  --selected-bg: #e8f0e9;
+  --input-bg: #ffffff;
+  --track: #e2e2dd;
+  --control: #f0f0ec;
+  --control-hover: #e2e2dd;
+  --btn-secondary: #e4e4df;
+  --btn-secondary-hover: #d8d8d2;
+  --border: #d4d4ce;
+  --border-soft: #e4e4df;
+  --scroll-thumb: #c8c8c2;
+  --scroll-thumb-hover: #b0b0aa;
+  --text-strong: #111;
+  --text: #2b2b2b;
+  --text-soft: #333;
+  --text-dim: #555;
+  --text-muted: #5c5c5c;
+  --text-subtle: #666;
+  --text-faint: #6d6d6d;
+  --success-text: #2e7d32;
+  /* deeper sage with white text on light backgrounds (dark text on a mid-tone
+     fill looks muddy); hover goes darker, so it always gains contrast */
+  --accent: #55775B;
+  --accent-hover: #4A6A50;
+  --on-accent: #fff;
+  --accent-text: #4A7553;
+  --accent-text-hover: #3A5E42;
+  --focus-ring: #4A7553;
+  --progress-fill: #a3a39d;
+  --slider: #555;
+  --warning-text: #a35c00;
+  --error-text: #c62828;
+  --shadow: rgba(0, 0, 0, 0.12);
+  --backdrop: rgba(0, 0, 0, 0.25);
+}
+
+body {
+  font-family: 'Ubuntu App', 'Ubuntu', sans-serif;
+  background: var(--bg);
+  color: var(--text);
+  height: 100vh;
+  overflow: hidden;
+}
+
+/* Form controls take the system font by default; use the app's font */
+button,
+input,
+select,
+textarea {
+  font-family: inherit;
+}

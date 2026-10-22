@@ -1,0 +1,30 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="64" height="64" viewBox="0 0 16.933 16.933">
+<!-- The desktop app icon (Linux, Windows): the logo's drops on a light disc,
+     so it stands out on light and dark backgrounds. The macOS icon is
+     app-icon-macos.svg; the header, favicon and tray use the bare logo.svg. -->
+<defs>
+  <linearGradient id="disc" x1="6.0226216" y1="281.81686" x2="10.909381" y2="295.24313" gradientUnits="userSpaceOnUse">
+    <stop offset="0" stop-color="#eef2f3"/>
+    <stop offset="1" stop-color="#d0d9dc"/>
+  </linearGradient>
+  <path id="drop" d="m 266,71 c 36,-3 80,17 118,49 38,33 58,73 51,106 -4,22 -17,39 -37,45 -24,8 -45,-5 -63,-23 -16,-19 -18,-45 -19,-72 -1,-49 -20,-85 -50,-105 z"/>
+  <path id="fold" d="m 266,71 c 30,20 49,56 50,105 1,27 3,53 19,72 -25,-21 -32,-42 -30,-68 3,-32 -10,-69 -39,-109 z"/>
+</defs>
+<g transform="translate(0,-280.07)">
+  <circle cx="8.466" cy="288.53" r="7.144" fill="url(#disc)"/>
+  <g transform="matrix(1.0098624,0,0,1.0098624,-0.22941164,-2.9915774)">
+    <g transform="matrix(0.02790915,0,0,0.02790915,1.4662443,281.53625)">
+      <use href="#drop" fill="#4badf7"/><use href="#fold" fill="#268ae3"/>
+    </g>
+    <g transform="matrix(0,0.02790915,-0.02790915,0,15.755729,281.53625)">
+      <use href="#drop" fill="#63cc69"/><use href="#fold" fill="#3aa74d"/>
+    </g>
+    <g transform="matrix(-0.02790915,0,0,-0.02790915,15.755729,295.82573)">
+      <use href="#drop" fill="#ffa51b"/><use href="#fold" fill="#df8506"/>
+    </g>
+    <g transform="matrix(0,-0.02790915,0.02790915,0,1.4662443,295.82573)">
+      <use href="#drop" fill="#a17de9"/><use href="#fold" fill="#7956c7"/>
+    </g>
+  </g>
+</g>
+</svg>

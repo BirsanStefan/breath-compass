@@ -1,0 +1,206 @@
+{
+    "exercises": [
+        {
+            "id": "gentle-start",
+            "category": "beginner",
+            "backgroundSound": "blackbird-forest.mp3",
+            "name": "Gentle Start",
+            "description": "Easy, even breathing to begin with",
+            "cycles": 38,
+            "phases": [
+                { "type": "inhale", "duration": 4 },
+                { "type": "exhale", "duration": 4 }
+            ]
+        },
+        {
+            "id": "coherent",
+            "category": "beginner",
+            "backgroundSound": "breath:pad",
+            "name": "Coherent Breathing",
+            "description": "Six slow, even breaths a minute",
+            "cycles": 30,
+            "phases": [
+                { "type": "inhale", "duration": 5 },
+                { "type": "exhale", "duration": 5 }
+            ]
+        },
+        {
+            "id": "calm-exhale",
+            "category": "beginner",
+            "backgroundSound": "breath:ocean",
+            "name": "Calm Exhale",
+            "description": "A slightly longer exhale to calm down",
+            "cycles": 30,
+            "phases": [
+                { "type": "inhale", "duration": 4 },
+                { "type": "exhale", "duration": 6 }
+            ]
+        },
+        {
+            "id": "cyclic-sigh",
+            "category": "beginner",
+            "backgroundSound": "synthwave-421k.mp3",
+            "name": "Cyclic Sigh",
+            "description": "Two inhales and a long exhale, to let tension go",
+            "cycles": 30,
+            "phases": [
+                { "type": "inhale", "duration": 3 },
+                { "type": "inhale", "duration": 1 },
+                { "type": "exhale", "duration": 6 }
+            ]
+        },
+        {
+            "id": "clear-mind",
+            "category": "advanced",
+            "backgroundSound": "breath:ocean",
+            "name": "Clear Mind",
+            "description": "Extended exhale for relaxation and mental clarity",
+            "cycles": 25,
+            "level": 0,
+            "levels": [
+                [
+                    { "type": "inhale", "duration": 3 },
+                    { "type": "exhale", "duration": 9 }
+                ],
+                [
+                    { "type": "inhale", "duration": 3 },
+                    { "type": "exhale", "duration": 12 }
+                ],
+                [
+                    { "type": "inhale", "duration": 3 },
+                    { "type": "exhale", "duration": 15 }
+                ]
+            ],
+            "phases": [
+                { "type": "inhale", "duration": 3 },
+                { "type": "exhale", "duration": 9 }
+            ]
+        },
+        {
+            "id": "power",
+            "category": "advanced",
+            "backgroundSound": "breath:pad",
+            "name": "Power",
+            "description": "Energy boost through breath retention",
+            "cycles": 20,
+            "level": 0,
+            "levels": [
+                [
+                    { "type": "inhale", "duration": 3 },
+                    { "type": "hold", "duration": 6 },
+                    { "type": "exhale", "duration": 6 }
+                ],
+                [
+                    { "type": "inhale", "duration": 3 },
+                    { "type": "hold", "duration": 9 },
+                    { "type": "exhale", "duration": 6 }
+                ],
+                [
+                    { "type": "inhale", "duration": 3 },
+                    { "type": "hold", "duration": 12 },
+                    { "type": "exhale", "duration": 6 }
+                ]
+            ],
+            "phases": [
+                { "type": "inhale", "duration": 3 },
+                { "type": "hold", "duration": 6 },
+                { "type": "exhale", "duration": 6 }
+            ]
+        },
+        {
+            "id": "harmony",
+            "category": "advanced",
+            "backgroundSound": "synthwave-421k.mp3",
+            "name": "Harmony",
+            "description": "Balanced breathing for emotional stability",
+            "cycles": 17,
+            "level": 0,
+            "levels": [
+                [
+                    { "type": "inhale", "duration": 3 },
+                    { "type": "hold", "duration": 6 },
+                    { "type": "exhale", "duration": 6 },
+                    { "type": "sustain", "duration": 3 }
+                ],
+                [
+                    { "type": "inhale", "duration": 3 },
+                    { "type": "hold", "duration": 9 },
+                    { "type": "exhale", "duration": 6 },
+                    { "type": "sustain", "duration": 3 }
+                ],
+                [
+                    { "type": "inhale", "duration": 3 },
+                    { "type": "hold", "duration": 12 },
+                    { "type": "exhale", "duration": 6 },
+                    { "type": "sustain", "duration": 3 }
+                ]
+            ],
+            "phases": [
+                { "type": "inhale", "duration": 3 },
+                { "type": "hold", "duration": 6 },
+                { "type": "exhale", "duration": 6 },
+                { "type": "sustain", "duration": 3 }
+            ]
+        },
+        {
+            "id": "square-breathing",
+            "category": "advanced",
+            "name": "Square Breathing",
+            "description": "Equal duration for all phases, promotes balance",
+            "cycles": 19,
+            "level": 1,
+            "levels": [
+                [
+                    { "type": "inhale", "duration": 3 },
+                    { "type": "hold", "duration": 3 },
+                    { "type": "exhale", "duration": 3 },
+                    { "type": "sustain", "duration": 3 }
+                ],
+                [
+                    { "type": "inhale", "duration": 4 },
+                    { "type": "hold", "duration": 4 },
+                    { "type": "exhale", "duration": 4 },
+                    { "type": "sustain", "duration": 4 }
+                ],
+                [
+                    { "type": "inhale", "duration": 5 },
+                    { "type": "hold", "duration": 5 },
+                    { "type": "exhale", "duration": 5 },
+                    { "type": "sustain", "duration": 5 }
+                ]
+            ],
+            "phases": [
+                { "type": "inhale", "duration": 4 },
+                { "type": "hold", "duration": 4 },
+                { "type": "exhale", "duration": 4 },
+                { "type": "sustain", "duration": 4 }
+            ]
+        },
+        {
+            "id": "relax",
+            "category": "advanced",
+            "backgroundSound": "blackbird-forest.mp3",
+            "name": "Relax",
+            "description": "Deep relaxation before sleep",
+            "cycles": 20,
+            "level": 0,
+            "levels": [
+                [
+                    { "type": "inhale", "duration": 3 },
+                    { "type": "exhale", "duration": 6 },
+                    { "type": "sustain", "duration": 6 }
+                ],
+                [
+                    { "type": "inhale", "duration": 3 },
+                    { "type": "exhale", "duration": 6 },
+                    { "type": "sustain", "duration": 9 }
+                ]
+            ],
+            "phases": [
+                { "type": "inhale", "duration": 3 },
+                { "type": "exhale", "duration": 6 },
+                { "type": "sustain", "duration": 6 }
+            ]
+        }
+    ]
+}

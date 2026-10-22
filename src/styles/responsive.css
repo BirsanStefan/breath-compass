@@ -1,0 +1,205 @@
+/* Phones and narrow windows: rules that touch several parts of the app.
+   Loaded late, so they override the wide-screen rules. */
+
+/* ==================== PHONES / NARROW WINDOWS ==================== */
+/* The session's bottom bar gives way as the window narrows: first the
+   shortcuts shrink to "?", then go; the volume goes on small screens and on
+   touch devices (they have volume buttons). Stop always stays. */
+@media (max-width: 1040px) {
+  .keyboard-hints span {
+    display: none;
+  }
+}
+
+/* Keyboard hints are useless without a keyboard, and take room on phones */
+@media (hover: none) and (pointer: coarse),
+(max-width: 760px) {
+  .keyboard-hints {
+    display: none;
+  }
+}
+
+@media (hover: none) and (pointer: coarse),
+(max-width: 480px) {
+  .session-bar .volume-control {
+    display: none;
+  }
+
+  .session-bar {
+    grid-template-columns: 1fr;
+  }
+
+  .session-stop-slot {
+    grid-column: 1;
+    justify-self: center;
+  }
+}
+
+@media (max-width: 760px) {
+
+  /* The whole page scrolls instead of fixed panels */
+  body {
+    height: auto;
+    overflow: auto;
+  }
+
+  .app {
+    height: auto;
+    min-height: 100vh;
+    min-height: 100dvh;
+  }
+
+  .app-header {
+    padding: 0.75rem 1rem;
+    position: sticky;
+    top: 0;
+    z-index: 5;
+  }
+
+  .app-header h1 {
+    font-size: 1.125rem;
+  }
+
+  .header-actions {
+    gap: 0.5rem;
+  }
+
+  .app-body {
+    flex-direction: column;
+    overflow: visible;
+  }
+
+  .session-view {
+    padding: 1rem 1rem 1.5rem;
+    overflow: visible;
+  }
+
+  .session-bar {
+    position: static;
+    width: 100%;
+    padding: 0;
+    margin-top: 1.25rem;
+  }
+
+  /* scales down with the screen, so long translated names still fit */
+  .exercise-title {
+    font-size: clamp(1.2rem, 5.5vw, 1.5rem);
+  }
+
+  .exercise-strip-row {
+    column-gap: 0.75rem;
+  }
+
+  .strip-neighbour {
+    font-size: 1rem;
+  }
+
+  .breath-circle {
+    width: min(480px, 100%);
+  }
+
+  /* Full screen on phones, appears without sliding */
+  .exercise-list {
+    position: fixed;
+    inset: 0;
+    z-index: 20;
+    width: 100%;
+    min-width: 0;
+    border-left: none;
+    box-shadow: none;
+    padding: 1rem;
+    transform: none;
+    transition: none;
+  }
+
+  .exercise-list:not(.open) {
+    display: none;
+  }
+
+  .exercise-list.open {
+    box-shadow: none;
+    transition: none;
+  }
+
+  .exercise-backdrop {
+    display: none;
+  }
+}
+
+/* Phones: the places move from the header to a bottom bar (BottomNav);
+   the header keeps the language and the theme. The neighbours are only
+   chevrons here (see .compact), with a bigger target; a swipe switches too.
+   The name gets up to two lines, and always the room for two, so the circle
+   below doesn't move between exercises. */
+@media (max-width: 600px) {
+  .header-place {
+    display: none;
+  }
+
+  .bottom-nav {
+    display: grid;
+  }
+
+  .app {
+    padding-bottom: calc(var(--bottom-nav-height) + env(safe-area-inset-bottom, 0px));
+  }
+
+  .exercise-list {
+    bottom: calc(var(--bottom-nav-height) + env(safe-area-inset-bottom, 0px));
+  }
+
+  .exercise-title {
+    display: flex;
+    align-items: flex-end;
+    justify-content: center;
+    min-height: calc(2 * 1.25em + 0.2em);
+    font-size: clamp(1.1rem, 5vw, 1.35rem);
+    line-height: 1.25;
+    white-space: normal;
+  }
+
+  .exercise-title-text {
+    display: -webkit-box;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 2;
+    line-clamp: 2;
+    overflow: hidden;
+    overflow-wrap: anywhere;
+    white-space: normal;
+  }
+
+  .strip-neighbour {
+    align-self: end;
+  }
+
+  /* fixed columns for the chevrons, so a long name wraps instead of
+     pushing them off the screen */
+  .exercise-strip-row {
+    grid-template-columns: 2.5rem minmax(0, 1fr) 2.5rem;
+    column-gap: 0.5rem;
+  }
+
+  .exercise-title-btn {
+    padding-inline: 0.25em;
+  }
+
+  .strip-neighbour {
+    padding: 0.4em;
+    font-size: 1.25rem;
+  }
+
+  .strip-prev {
+    margin-left: -0.4em;
+  }
+
+  .strip-next {
+    margin-right: -0.4em;
+  }
+}
+
+/* Very narrow: language menu shows only the globe */
+@media (max-width: 480px) {
+  .language-button>span:not(.language-caret) {
+    display: none;
+  }
+}
