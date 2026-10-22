@@ -1,0 +1,553 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Breath Compass: guided breathing for desktop and browser</title>
+  <meta name="description" content="Pick an exercise, press Start and follow the circle. A free, open source breathing app for Linux, Windows, macOS and the browser. No account, no tracking." />
+  <meta name="theme-color" content="#1a1a1a" media="(prefers-color-scheme: dark)" />
+  <meta name="theme-color" content="#f4f4f1" media="(prefers-color-scheme: light)" />
+  <meta property="og:title" content="Breath Compass" />
+  <meta property="og:description" content="Guided breathing for Linux, Windows, macOS and the browser. Free and open source, no account, no tracking." />
+  <meta property="og:type" content="website" />
+  <meta property="og:image" content="images/hero-dark.webp" />
+  <!-- The web app is deployed next to this page, in app/ (see .github/workflows/pages.yml) -->
+  <link rel="icon" type="image/svg+xml" href="app/icon.svg" />
+  <link rel="apple-touch-icon" href="app/icon-256.png" />
+  <style>
+    /* The app's own font, served from here (no third-party requests) */
+    @font-face {
+      font-family: 'Ubuntu';
+      font-weight: 400;
+      font-display: swap;
+      src: url('fonts/ubuntu-400.woff2') format('woff2');
+    }
+    @font-face {
+      font-family: 'Ubuntu';
+      font-weight: 500;
+      font-display: swap;
+      src: url('fonts/ubuntu-500.woff2') format('woff2');
+    }
+
+    /* The app's colors (src/styles/theme.css) */
+    :root {
+      color-scheme: dark;
+      --bg: #1a1a1a;
+      --surface: #222;
+      --raised: #2a2a2a;
+      --border: #3a3a3a;
+      --text-strong: #fff;
+      --text: #e0e0e0;
+      --text-muted: #a8a8a8;
+      --accent: #8bae91;
+      --accent-hover: #a3bea7;
+      --on-accent: #17251b;
+      --inhale: #64b5f6;
+      --shadow: rgba(0, 0, 0, 0.45);
+    }
+
+    @media (prefers-color-scheme: light) {
+      :root {
+        color-scheme: light;
+        --bg: #f4f4f1;
+        --surface: #fff;
+        --raised: #fff;
+        --border: #d4d4ce;
+        --text-strong: #111;
+        --text: #2b2b2b;
+        --text-muted: #5c5c5c;
+        --accent: #55775b;
+        --accent-hover: #46634b;
+        --on-accent: #fff;
+        --inhale: #3d8fd1;
+        --shadow: rgba(0, 0, 0, 0.12);
+      }
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+    }
+
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: 'Ubuntu', system-ui, sans-serif;
+      line-height: 1.6;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    a {
+      color: var(--accent);
+    }
+
+    a:hover {
+      color: var(--accent-hover);
+    }
+
+    :focus-visible {
+      outline: 2px solid var(--accent);
+      outline-offset: 3px;
+    }
+
+    .wrap {
+      width: min(1100px, 100% - 2rem);
+      margin-inline: auto;
+    }
+
+    /* Header */
+    .site-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 1rem;
+      padding-block: 1.25rem;
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 0.6rem;
+      color: var(--text-strong);
+      font-size: 1.25rem;
+      font-weight: 500;
+      text-decoration: none;
+    }
+
+    .brand:hover {
+      color: var(--text-strong);
+    }
+
+    .brand img {
+      width: 1.6em;
+      height: 1.6em;
+    }
+
+    .site-nav {
+      display: flex;
+      gap: 1.5rem;
+    }
+
+    .site-nav a {
+      color: var(--text-muted);
+      text-decoration: none;
+    }
+
+    .site-nav a:hover {
+      color: var(--text-strong);
+    }
+
+    /* Hero */
+    .hero {
+      padding-block: 4rem 3rem;
+      text-align: center;
+    }
+
+    h1 {
+      color: var(--text-strong);
+      font-size: clamp(2.2rem, 6vw, 3.5rem);
+      font-weight: 500;
+      line-height: 1.15;
+      letter-spacing: -0.01em;
+    }
+
+    .lead {
+      max-width: 38rem;
+      margin: 1.25rem auto 0;
+      color: var(--text-muted);
+      font-size: 1.2rem;
+    }
+
+    .actions {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 0.75rem;
+      margin-top: 2rem;
+    }
+
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      padding: 0.75rem 1.5rem;
+      border: 1px solid var(--border);
+      border-radius: 999px;
+      color: var(--text-strong);
+      font-weight: 500;
+      text-decoration: none;
+      transition: background-color 0.2s, border-color 0.2s;
+    }
+
+    .btn:hover {
+      color: var(--text-strong);
+      border-color: var(--text-muted);
+    }
+
+    .btn-primary {
+      background: var(--accent);
+      border-color: var(--accent);
+      color: var(--on-accent);
+    }
+
+    .btn-primary:hover {
+      background: var(--accent-hover);
+      border-color: var(--accent-hover);
+      color: var(--on-accent);
+    }
+
+    .note {
+      margin-top: 1rem;
+      color: var(--text-muted);
+      font-size: 0.9rem;
+    }
+
+    .screenshot {
+      display: block;
+      width: 100%;
+      height: auto;
+      margin-top: 3.5rem;
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      box-shadow: 0 24px 60px var(--shadow);
+    }
+
+    /* Sections */
+    section {
+      padding-block: 4rem;
+    }
+
+    h2 {
+      color: var(--text-strong);
+      font-size: clamp(1.6rem, 4vw, 2.1rem);
+      font-weight: 500;
+      line-height: 1.25;
+      text-align: center;
+    }
+
+    .section-lead {
+      max-width: 36rem;
+      margin: 0.75rem auto 0;
+      color: var(--text-muted);
+      text-align: center;
+    }
+
+    .features {
+      display: grid;
+      /* three across on wide screens, so the six make two full rows */
+      grid-template-columns: repeat(auto-fit, minmax(min(100%, 19rem), 1fr));
+      gap: 1rem;
+      margin-top: 2.5rem;
+    }
+
+    .feature {
+      padding: 1.5rem;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+    }
+
+    .feature h3 {
+      color: var(--text-strong);
+      font-size: 1.1rem;
+      font-weight: 500;
+    }
+
+    .feature p {
+      margin-top: 0.4rem;
+      color: var(--text-muted);
+    }
+
+    .also {
+      margin-top: 2rem;
+      color: var(--text-muted);
+      text-align: center;
+    }
+
+    /* Phone */
+    .split {
+      display: grid;
+      grid-template-columns: 1fr minmax(0, 300px);
+      align-items: center;
+      gap: 3rem;
+    }
+
+    .split h2,
+    .split .section-lead {
+      margin-inline: 0;
+      text-align: left;
+    }
+
+    .split .actions {
+      justify-content: flex-start;
+    }
+
+    .phone {
+      width: 100%;
+      height: auto;
+      border: 1px solid var(--border);
+      border-radius: 28px;
+      box-shadow: 0 24px 60px var(--shadow);
+    }
+
+    /* Download */
+    .downloads {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(min(100%, 16rem), 1fr));
+      gap: 1rem;
+      margin-top: 2.5rem;
+    }
+
+    .platform {
+      display: flex;
+      flex-direction: column;
+      gap: 0.75rem;
+      padding: 1.5rem;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+    }
+
+    /* The visitor's own system, when the browser tells */
+    .platform.yours {
+      border-color: var(--accent);
+    }
+
+    .platform h3 {
+      color: var(--text-strong);
+      font-size: 1.2rem;
+      font-weight: 500;
+    }
+
+    .platform ul {
+      display: flex;
+      flex-direction: column;
+      gap: 0.5rem;
+      padding: 0;
+      list-style: none;
+    }
+
+    .platform a {
+      display: flex;
+      justify-content: space-between;
+      gap: 1rem;
+      padding: 0.6rem 0.9rem;
+      background: var(--raised);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      color: var(--text-strong);
+      text-decoration: none;
+    }
+
+    .platform a:hover {
+      border-color: var(--accent);
+    }
+
+    .platform a span {
+      color: var(--text-muted);
+      font-size: 0.9rem;
+    }
+
+    .platform p {
+      color: var(--text-muted);
+      font-size: 0.9rem;
+    }
+
+    .version {
+      margin-top: 1.5rem;
+      color: var(--text-muted);
+      text-align: center;
+    }
+
+    footer {
+      padding-block: 2.5rem 3rem;
+      border-top: 1px solid var(--border);
+      color: var(--text-muted);
+      font-size: 0.9rem;
+      text-align: center;
+    }
+
+    footer p + p {
+      margin-top: 0.4rem;
+    }
+
+    @media (max-width: 760px) {
+      .site-nav a:not(.keep) {
+        display: none;
+      }
+
+      .hero {
+        padding-top: 2.5rem;
+      }
+
+      .split {
+        grid-template-columns: 1fr;
+        justify-items: center;
+      }
+
+      .split h2,
+      .split .section-lead {
+        text-align: center;
+      }
+
+      .split .actions {
+        justify-content: center;
+      }
+
+      .phone {
+        max-width: 260px;
+      }
+    }
+
+    @media (prefers-reduced-motion: no-preference) {
+      html {
+        scroll-behavior: smooth;
+      }
+    }
+  </style>
+</head>
+<body>
+  <header class="wrap site-header">
+    <a class="brand" href="./">
+      <img src="app/icon.svg" alt="" />
+      Breath Compass
+    </a>
+    <nav class="site-nav" aria-label="Sections">
+      <a href="#features">Features</a>
+      <a href="#download" class="keep">Download</a>
+      <a href="https://github.com/BirsanStefan/breath-compass">GitHub</a>
+    </nav>
+  </header>
+
+  <main>
+    <div class="wrap hero">
+      <h1>Breathe with the circle</h1>
+      <p class="lead">Pick an exercise, press Start and follow the circle as it grows with your inhale and shrinks with your exhale. Free and open source, with no account and no tracking.</p>
+      <div class="actions">
+        <a class="btn btn-primary" href="#download">Download</a>
+        <a class="btn" href="app/">Try it in your browser</a>
+      </div>
+      <p class="note">For Linux, Windows and macOS, and any modern browser.</p>
+      <picture>
+        <source srcset="images/idle-light.webp" media="(prefers-color-scheme: light)" />
+        <img class="screenshot" src="images/hero-dark.webp" width="1600" height="956"
+          alt="Breath Compass during Coherent Breathing: a ring split into inhale and exhale, the inner circle showing Inhale and a countdown of 2 seconds" />
+      </picture>
+    </div>
+
+    <section id="features" class="wrap">
+      <h2>Everything for a calm few minutes</h2>
+      <p class="section-lead">Nine built-in exercises, from an easy 4 and 4 to advanced patterns with holds, and room for your own.</p>
+      <div class="features">
+        <div class="feature">
+          <h3>Follow the circle</h3>
+          <p>The ring shows each phase in proportion to its length, and the circle breathes with you, with the seconds counting down inside.</p>
+        </div>
+        <div class="feature">
+          <h3>Sound that guides you</h3>
+          <p>A bell at each phase, a soft tick every second and optional background music, or a sound that rises and falls with your breath.</p>
+        </div>
+        <div class="feature">
+          <h3>Your own exercises</h3>
+          <p>Set the inhale, hold, exhale and pause, the length in minutes and the music. Duplicate a built-in exercise to make a variation.</p>
+        </div>
+        <div class="feature">
+          <h3>Statistics and streaks</h3>
+          <p>Minutes this week and month, a daily goal with streaks and a 30-day chart. Only time spent breathing counts.</p>
+        </div>
+        <div class="feature">
+          <h3>Sync without an account</h3>
+          <p>On the desktop, keep your data in a folder synced with Syncthing, Nextcloud or Dropbox, and every device shares it.</p>
+        </div>
+        <div class="feature">
+          <h3>Private by design</h3>
+          <p>No account, no server, no analytics. Everything stays on your device. The only request is an optional check for updates.</p>
+        </div>
+      </div>
+      <p class="also">Also: English, French, Portuguese, Romanian and Spanish · dark and light themes · a focus mode and full screen · keyboard shortcuts · a tray icon and daily reminders on the desktop · screen reader support.</p>
+    </section>
+
+    <section class="wrap split">
+      <div>
+        <h2>On your phone, too</h2>
+        <p class="section-lead">The web version works in any modern browser. On a phone it keeps the screen on during a session, and you can add it to your home screen to open it like an app. Your data stays in the browser.</p>
+        <div class="actions">
+          <a class="btn btn-primary" href="app/">Open the web app</a>
+        </div>
+      </div>
+      <img class="phone" src="images/phone-dark.webp" width="600" height="1298" loading="lazy"
+        alt="Breath Compass on a phone: Gentle Start with its phases, the breathing circle, and a bottom bar with Breathe, Exercises, Stats and Settings" />
+    </section>
+
+    <section id="download" class="wrap">
+      <h2>Download</h2>
+      <p class="section-lead">Free, for every major system. Install it over an older version to update; your data is kept.</p>
+      <!-- The links point to the releases page; the script below replaces them
+           with the latest release's files when GitHub's API answers -->
+      <div class="downloads">
+        <div class="platform" data-os="linux">
+          <h3>Linux</h3>
+          <ul>
+            <li><a data-asset="\.deb$" href="https://github.com/BirsanStefan/breath-compass/releases/latest">.deb <span>Debian, Ubuntu, Mint</span></a></li>
+            <li><a data-asset="\.rpm$" href="https://github.com/BirsanStefan/breath-compass/releases/latest">.rpm <span>Fedora, openSUSE</span></a></li>
+            <li><a data-asset="\.AppImage$" href="https://github.com/BirsanStefan/breath-compass/releases/latest">.AppImage <span>Any distribution</span></a></li>
+          </ul>
+        </div>
+        <div class="platform" data-os="windows">
+          <h3>Windows</h3>
+          <ul>
+            <li><a data-asset="-setup\.exe$" href="https://github.com/BirsanStefan/breath-compass/releases/latest">Installer <span>.exe</span></a></li>
+            <li><a data-asset="\.msi$" href="https://github.com/BirsanStefan/breath-compass/releases/latest">For managed computers <span>.msi</span></a></li>
+          </ul>
+          <p>On first launch, choose <strong>More info → Run anyway</strong>: the installer isn't signed yet.</p>
+        </div>
+        <div class="platform" data-os="mac">
+          <h3>macOS</h3>
+          <ul>
+            <li><a data-asset="aarch64\.dmg$" href="https://github.com/BirsanStefan/breath-compass/releases/latest">Apple Silicon <span>M1 and later</span></a></li>
+            <li><a data-asset="x64\.dmg$" href="https://github.com/BirsanStefan/breath-compass/releases/latest">Intel <span>.dmg</span></a></li>
+          </ul>
+          <p>On first launch, right-click the app and choose <strong>Open</strong>: it isn't signed yet.</p>
+        </div>
+      </div>
+      <p class="version" id="version">All files and older versions are on the <a href="https://github.com/BirsanStefan/breath-compass/releases">releases page</a> · <a href="https://github.com/BirsanStefan/breath-compass#installing">Installation notes</a></p>
+    </section>
+  </main>
+
+  <footer>
+    <div class="wrap">
+      <p>Breath Compass is free software under the <a href="https://github.com/BirsanStefan/breath-compass/blob/main/LICENSE">GPL-3.0</a>. <a href="https://github.com/BirsanStefan/breath-compass">Source code</a> · <a href="https://github.com/BirsanStefan/breath-compass/issues">Report a problem</a></p>
+      <p>Breathing exercises aren't medical treatment. If you feel dizzy or unwell, stop and breathe normally.</p>
+    </div>
+  </footer>
+
+  <script>
+    // Highlight the visitor's system, when the browser says which
+    (() => {
+      const platform = (navigator.userAgentData?.platform || navigator.platform || navigator.userAgent).toLowerCase();
+      const os = platform.includes('win') ? 'windows'
+        : platform.includes('mac') ? 'mac'
+          : platform.includes('linux') && !/android/.test(navigator.userAgent.toLowerCase()) ? 'linux' : null;
+      if (os) document.querySelector(`[data-os="${os}"]`)?.classList.add('yours');
+    })();
+
+    // Point each download straight at its file in the latest published release.
+    // Without an answer (offline, rate-limited, no release yet) the links keep
+    // going to the releases page.
+    fetch('https://api.github.com/repos/BirsanStefan/breath-compass/releases/latest')
+      .then((response) => (response.ok ? response.json() : Promise.reject(response.status)))
+      .then((release) => {
+        document.querySelectorAll('[data-asset]').forEach((link) => {
+          const pattern = new RegExp(link.dataset.asset, 'i');
+          const asset = release.assets.find((file) => pattern.test(file.name));
+          if (asset) link.href = asset.browser_download_url;
+        });
+        const version = document.getElementById('version');
+        const strong = document.createElement('strong');
+        strong.textContent = release.tag_name;
+        version.prepend('Latest version: ', strong, '. ');
+      })
+      .catch(() => {});
+  </script>
+</body>
+</html>

@@ -219,6 +219,12 @@ and is shown in **Settings → About**.
 NAS, GitHub Pages, Netlify… It works from any folder (e.g. `https://example.com/breath/`)
 and needs no server-side code.
 
+The project's own site is published this way, by `.github/workflows/pages.yml`: the
+landing page in `site/` at <https://birsanstefan.github.io/breath-compass/> and the
+web app under `app/`. It runs when a release is published (so the web app matches
+the installers) or by hand from Actions → Pages → Run workflow. Once, in the
+repository: Settings → Pages → Source: **GitHub Actions**.
+
 The web version keeps everything in the browser's own storage: it doesn't sync, and
 clearing the browser's site data erases it. Importing your own sounds and choosing a
 data folder are desktop-only.
@@ -454,6 +460,7 @@ replaces its generated version.
 src/
   main.jsx               entry point
   App.jsx                the app: header, and the session, statistics or settings screen
+  BottomNav.jsx          the bottom bar on phones: Breathe, Exercises, Stats, Settings
   session/               the session screen
     SessionView.jsx        the screen: exercise names, visual, progress, bottom bar
     ExerciseStrip.jsx      the exercise's name between the previous and next one
@@ -507,6 +514,8 @@ scripts/icons.mjs        the icon generator
 scripts/local-install.mjs `npm run local` (Linux: run from this folder)
 sounds/                  bundled music (credits in CREDITS.md)
 src-tauri/               desktop app (Tauri)
+site/                    the website's landing page (GitHub Pages, with the app in app/)
+.github/workflows/       tests, release builds, the website
 ```
 
 ## License

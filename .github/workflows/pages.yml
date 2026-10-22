@@ -1,0 +1,64 @@
+# Publishes the website on GitHub Pages: the landing page (site/) at the root
+# and the web app (npm run build) in app/, so
+#   https://birsanstefan.github.io/breath-compass/      the landing page
+#   https://birsanstefan.github.io/breath-compass/app/  the app
+#
+# Runs when a release is published, so the web app always matches the latest
+# installers. Also runnable by hand (Actions → Pages → Run workflow), e.g.
+# after editing the landing page.
+#
+# One-time setup: GitHub → Settings → Pages → Source: "GitHub Actions".
+name: Pages
+
+on:
+  release:
+    types: [published]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write # publish the site
+  id-token: write # prove the deployment comes from this workflow
+
+# One deployment at a time; a newer one waits rather than cancelling a running one
+concurrency:
+  group: pages
+  cancel-in-progress: false
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+
+      - run: npm ci
+
+      - run: npm test
+
+      # The app uses relative paths (vite.config.js: base './'), so it works in app/ as is
+      - run: npm run build
+
+      - name: Put the landing page and the app together
+        run: |
+          mkdir _site
+          cp -r site/. _site/
+          cp -r dist _site/app
+
+      - uses: actions/upload-pages-artifact@v3
+        with:
+          path: _site
+
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - id: deployment
+        uses: actions/deploy-pages@v4
